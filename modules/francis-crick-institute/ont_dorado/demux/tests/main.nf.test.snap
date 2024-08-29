@@ -1,0 +1,108 @@
+{
+    "fastq": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "barcode01.bam:md5,d0b28dace9bdc1ae921b0e0d092239d1",
+                            "barcode02.bam:md5,8a9bd32509eab5c3989624d2109feae5",
+                            "barcode03.bam:md5,5289f36ec2fa8bda382b47031ee77db8",
+                            "barcode04.bam:md5,eb9a89c095a9cae2808c1145337e88aa",
+                            "barcode05.bam:md5,7dfa0c31f8a7c648fbcb371c5afa9541",
+                            "barcode06.bam:md5,03b2229ab201fa51f3ee8f3c6990e9e8"
+                        ]
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "versions.yml:md5,196d7a6e933fed148666703bc64f3bf0"
+                ],
+                "bam": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "barcode01.bam:md5,d0b28dace9bdc1ae921b0e0d092239d1",
+                            "barcode02.bam:md5,8a9bd32509eab5c3989624d2109feae5",
+                            "barcode03.bam:md5,5289f36ec2fa8bda382b47031ee77db8",
+                            "barcode04.bam:md5,eb9a89c095a9cae2808c1145337e88aa",
+                            "barcode05.bam:md5,7dfa0c31f8a7c648fbcb371c5afa9541",
+                            "barcode06.bam:md5,03b2229ab201fa51f3ee8f3c6990e9e8"
+                        ]
+                    ]
+                ],
+                "fastq": [
+                    
+                ],
+                "versions": [
+                    "versions.yml:md5,196d7a6e933fed148666703bc64f3bf0"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.0",
+            "nextflow": "24.04.4"
+        },
+        "timestamp": "2024-08-29T17:00:04.744686"
+    },
+    "bam": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "barcode01.bam:md5,d0b28dace9bdc1ae921b0e0d092239d1",
+                            "barcode02.bam:md5,8a9bd32509eab5c3989624d2109feae5",
+                            "barcode03.bam:md5,5289f36ec2fa8bda382b47031ee77db8",
+                            "barcode04.bam:md5,eb9a89c095a9cae2808c1145337e88aa",
+                            "barcode05.bam:md5,7dfa0c31f8a7c648fbcb371c5afa9541",
+                            "barcode06.bam:md5,03b2229ab201fa51f3ee8f3c6990e9e8"
+                        ]
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    "versions.yml:md5,196d7a6e933fed148666703bc64f3bf0"
+                ],
+                "bam": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "barcode01.bam:md5,d0b28dace9bdc1ae921b0e0d092239d1",
+                            "barcode02.bam:md5,8a9bd32509eab5c3989624d2109feae5",
+                            "barcode03.bam:md5,5289f36ec2fa8bda382b47031ee77db8",
+                            "barcode04.bam:md5,eb9a89c095a9cae2808c1145337e88aa",
+                            "barcode05.bam:md5,7dfa0c31f8a7c648fbcb371c5afa9541",
+                            "barcode06.bam:md5,03b2229ab201fa51f3ee8f3c6990e9e8"
+                        ]
+                    ]
+                ],
+                "fastq": [
+                    
+                ],
+                "versions": [
+                    "versions.yml:md5,196d7a6e933fed148666703bc64f3bf0"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.0",
+            "nextflow": "24.04.4"
+        },
+        "timestamp": "2024-08-29T17:00:56.097971"
+    }
+}

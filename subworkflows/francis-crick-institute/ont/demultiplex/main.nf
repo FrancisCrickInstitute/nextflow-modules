@@ -68,3 +68,126 @@ if (!params.dorado_bc_kit) {
 
 // Extract run_id
 def runid = file(params.run_dir).name
+
+
+  //
+    // CHANNEL: Adding all pod5 files
+    //
+    ch_pod5_files         = Channel.fromPath("${params.run_dir}/pod5/*.pod5")
+    ch_pod5_files_pass    = Channel.fromPath("${params.run_dir}/pod5_pass/*.pod5")
+    ch_pod5_files_fail    = Channel.fromPath("${params.run_dir}/pod5_fail/*.pod5")
+    ch_pod5_files_skipped = Channel.fromPath("${params.run_dir}/pod5_skipped/*.pod5")
+    ch_pod5_files         = ch_pod5_files_pass.mix(ch_pod5_files_fail).mix(ch_pod5_files_skipped).mix(ch_pod5_files)
+    ch_collected_pod5     = ch_pod5_files.collect().ifEmpty([])
+
+    //
+    // CHANNEL: Put all pod5 generated files and their corresponding sample IDs into a single channel 
+    //
+    ch_pod5_files = ch_pod5_files
+        .collate(params.dorado_batch_num)
+        .map{ [[ id: it[0].simpleName.substring(0, 26) ], it ] }
+
+    //
+    // CHANNEL: Adding bam files to a channel if it exists
+    //
+    ch_bam = Channel.empty()
+    if (params.bam) {
+        ch_bam = Channel.from(file(params.bam, checkIfExists: true))
+            .map{ [ [ id: it.simpleName ], it ] }
+    }
+
+    //
+    // CHANNEL: Load samplesheet
+    //
+    if(params.samplesheet) {
+        ch_samplesheet = Channel.from(file(params.samplesheet))
+    }
+
+    //
+    // SUBWORKFLOW: check input samplesheet and add relevant info to metadata
+    //
+    SAMPLESHEET_PARSE (
+        ch_samplesheet
+    )
+    ch_versions = ch_versions.mix(SAMPLESHEET_PARSE.out.versions)
+    ch_meta     = SAMPLESHEET_PARSE.out.meta
+
+    //
+    // CHANNEL: extract run ID name and assign to metadata
+    //
+    ch_meta = ch_meta.map{
+        it.run_id = runid 
+        it.id = it.sample_id
+        it.remove("sample_id")
+        it
+    }
+
+    //
+    // CHANNEL: Collect barcode names
+    //
+    ch_barcodes = ch_meta.map{ it.barcode }.toSortedList()
+
+    if (params.run_basecaller) {
+        //
+        // MODULE: Generate a bam file using pod5 files and any supplied bam to resume from
+        //
+        DORADO_BASECALLER (
+            ch_pod5_files,
+            params.bam ? ch_bam.map{it[1]} : [],
+            dorado_model,
+            dorado_bc_kit ?: []
+        )
+        ch_versions = ch_versions.mix(DORADO_BASECALLER.out.versions)
+        ch_bam      = DORADO_BASECALLER.out.bam
+
+        //
+        // CHANNEL: Create basecalling merge channels
+        //
+        ch_bc_merge = ch_bam
+            .collect{ it[1] }
+            .branch {
+                tomerge: it.size() > 1
+                    return [[ id: it[0].simpleName.substring(0, 26) ], it ]
+                pass: true
+                    return [[ id: it[0].simpleName.substring(0, 26) ], it ]
+            }
+
+        //
+        // MODULE: Merged basecalled bams if required
+        //
+        MERGE_BASECALLING (
+            ch_bc_merge.tomerge,
+            [[],[]],
+            [[],[]]
+        )
+        ch_versions = ch_versions.mix(MERGE_BASECALLING.out.versions)
+        ch_bam      = MERGE_BASECALLING.out.bam.mix(ch_bc_merge.pass)
+    }
+
+    if (params.run_demux) {
+        //
+        // MODULE: Generate demultiplexed bam or fastq files
+        //
+        DORADO_DEMUX (
+            ch_bam
+        )
+        ch_versions    = ch_versions.mix(DORADO_DEMUX.out.versions)
+        ch_demux_bam   = DORADO_DEMUX.out.bam
+        ch_demux_fastq = DORADO_DEMUX.out.fastq
+
+        //
+        // CHANNEL: Merge metadata to the demultiplexed fastq file
+        //
+        ch_demux_fastq = ch_meta
+            .map { [it.barcode, it] }
+            .join( ch_demux_fastq.map{it[1]}.flatten().map{ [ it.simpleName, it ] } )
+            .map { [ it[1], it[2] ] }
+
+        //
+        // CHANNEL: Merge metadata to the demultiplexed bam file
+        //
+        ch_demux_bam = ch_meta
+            .map { [it.barcode, it] }
+            .join( ch_demux_bam.map{it[1]}.flatten().map{ [ it.simpleName, it ] } )
+            .map { [ it[1], it[2] ] }
+    }
