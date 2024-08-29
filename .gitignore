@@ -12,6 +12,5 @@ output/
 results/
 test.xml
 test_output/
-tests/data/
 work/
 .github/CODEOWNERS-tmp
