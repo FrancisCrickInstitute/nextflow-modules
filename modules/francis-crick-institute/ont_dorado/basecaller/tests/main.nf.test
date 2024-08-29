@@ -1,0 +1,39 @@
+nextflow_process {
+
+    name "Test Module ONT_DORADO_BASECALLER"
+    script "../main.nf"
+    process "ONT_DORADO_BASECALLER"
+
+    tag "modules"
+    tag "ont"
+    tag "ont_dorado"
+    tag "ont_dorado/basecaller"
+
+    test("pod5") {
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id:'test' ],
+                    file('$baseDir/' + params.test_data_dir + '/ont/seq_runs/pod5_100/pod5/PAW36768_7b0e5258_08c7ccb8_0_sub100.pod5', checkIfExists: true)
+                ])
+                input[1] = []
+                input[2] = 'hac'
+                input[3] = []
+                """
+            }
+        }
+
+        then {
+            assertAll (
+                { assert process.success },
+                // { assert snapshot(
+                //         process.out.bam,
+                //         process.out.csi.collect { it.collect { it instanceof Map ? it : file(it).name } },
+                //         process.out.versions
+                // ).match()}
+            )
+        }
+    }
+}
