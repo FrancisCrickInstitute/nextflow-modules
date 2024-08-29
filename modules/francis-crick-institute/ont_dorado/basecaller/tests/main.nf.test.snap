@@ -1,0 +1,14 @@
+{
+    "pod5": {
+        "content": [
+            [
+                "versions.yml:md5,513856826291b2061d33db76a43805aa"
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.0",
+            "nextflow": "24.04.4"
+        },
+        "timestamp": "2024-08-29T16:11:51.011485"
+    }
+}

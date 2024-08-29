@@ -28,11 +28,7 @@ nextflow_process {
         then {
             assertAll (
                 { assert process.success },
-                // { assert snapshot(
-                //         process.out.bam,
-                //         process.out.csi.collect { it.collect { it instanceof Map ? it : file(it).name } },
-                //         process.out.versions
-                // ).match()}
+                { assert snapshot(process.out.versions).match()}
             )
         }
     }
