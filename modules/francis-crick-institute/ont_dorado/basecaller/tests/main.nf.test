@@ -10,6 +10,7 @@ nextflow_process {
     tag "ont_dorado/basecaller"
 
     test("pod5") {
+        tag "ont_dorado/basecaller/pod5"
 
         when {
             process {
@@ -19,6 +20,56 @@ nextflow_process {
                     file('$baseDir/' + params.test_data_dir + '/ont/seq_runs/pod5_100/pod5/PAW36768_7b0e5258_08c7ccb8_0_sub100.pod5', checkIfExists: true)
                 ])
                 input[1] = []
+                input[2] = 'hac'
+                input[3] = []
+                """
+            }
+        }
+
+        then {
+            assertAll (
+                { assert process.success },
+                { assert snapshot(process.out.versions).match()}
+            )
+        }
+    }
+
+    test("pod5_bckit") {
+        tag "ont_dorado/basecaller/pod5_bckit"
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id:'test' ],
+                    file('$baseDir/' + params.test_data_dir + '/ont/seq_runs/pod5_100/pod5/PAW36768_7b0e5258_08c7ccb8_0_sub100.pod5', checkIfExists: true)
+                ])
+                input[1] = []
+                input[2] = 'hac'
+                input[3] = 'SQK-PCB111-24'
+                """
+            }
+        }
+
+        then {
+            assertAll (
+                { assert process.success },
+                { assert snapshot(process.out.versions).match()}
+            )
+        }
+    }
+
+    test("pod5_resume") {
+        tag "ont_dorado/basecaller/pod5_resume"
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id:'test' ],
+                    file('$baseDir/' + params.test_data_dir + '/ont/seq_runs/pod5_100/pod5/PAW36768_7b0e5258_08c7ccb8_0_sub100.pod5', checkIfExists: true)
+                ])
+                input[1] = file('$baseDir/' + params.test_data_dir + '/ont/seq_runs/pod5_100/pod5.bam', checkIfExists: true)
                 input[2] = 'hac'
                 input[3] = []
                 """

@@ -20,4 +20,4 @@ RUN curl -O https://cdn.oxfordnanoportal.com/software/analysis/dorado-${DORADO_V
 RUN tar -xzvf dorado-${DORADO_VERSION}-linux-x64.tar.gz
 
 ENV PATH=/home/dorado-${DORADO_VERSION}-linux-x64/bin:$PATH
-# RUN dorado download --model all
+#RUN dorado download --model all
