@@ -1,0 +1,35 @@
+{
+    "summary": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.tsv:md5,462aa9608de3cbadc17a7e9141db12c3"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,af66335e1144f7929b55dbfb0ad96dd8"
+                ],
+                "tsv": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.tsv:md5,462aa9608de3cbadc17a7e9141db12c3"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,af66335e1144f7929b55dbfb0ad96dd8"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.0",
+            "nextflow": "24.04.4"
+        },
+        "timestamp": "2024-08-29T17:04:47.225814"
+    }
+}

@@ -1,0 +1,32 @@
+nextflow_process {
+
+    name "Test Module ONT_DORADO_SUMMARY"
+    script "../main.nf"
+    process "ONT_DORADO_SUMMARY"
+
+    tag "modules"
+    tag "ont"
+    tag "ont_dorado"
+    tag "ont_dorado/summary"
+
+    test("summary") {
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id:'test' ],
+                    file('$baseDir/' + params.test_data_dir + '/ont/seq_runs/multiplexed/1000_reads_6_samples.bam', checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll (
+                { assert process.success },
+                { assert snapshot(process.out).match()}
+            )
+        }
+    }
+}
