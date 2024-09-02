@@ -1,0 +1,91 @@
+nextflow_process {
+
+    name "Test Subworkflow ONT_DEMULTIPLEX"
+    script "../main.nf"
+    process "ONT_DEMULTIPLEX"
+
+    tag "subworkflows"
+    tag "ont"
+    tag "ont_demux"
+
+    test("simplex_default") {
+        tag "ont_demux/simplex_default"
+
+        when {
+            process {
+                """
+                input[0] = "hac"
+                input[1] = null
+                input[2] = false
+                input[3] = null
+                input[4] = 999999
+                input[5] = '$baseDir/' + params.test_data_dir + '/ont/seq_runs/pod5_100'
+                input[6] = null
+                input[7] = null
+                input[8] = false
+                input[9] = '$baseDir/' + params.test_data_dir + '/ont/seq_runs/pod5_100/samplesheet.csv'
+                """
+            }
+        }
+
+        then {
+            assertAll (
+                { assert process.success },
+                { assert snapshot(process.out.versions).match()},
+                { assert process.out.bam.size() == 1 },
+                { assert process.out.demux_fastq.size() == 1 },
+                { assert process.out.demux_bam.size() == 0 },
+            )
+        }
+    }
+
+    test("simplex_emitbam") {
+        tag "ont_demux/simplex_emitbam"
+
+        when {
+            process {
+                """
+                input[0] = "hac"
+                input[1] = null
+                input[2] = false
+                input[3] = null
+                input[4] = 999999
+                input[5] = '$baseDir/' + params.test_data_dir + '/ont/seq_runs/pod5_100'
+                input[6] = null
+                input[7] = null
+                input[8] = true
+                input[9] = '$baseDir/' + params.test_data_dir + '/ont/seq_runs/pod5_100/samplesheet.csv'
+                """
+            }
+        }
+
+        then {
+            assertAll (
+                { assert process.success },
+                { assert snapshot(process.out.versions).match()},
+                { assert process.out.bam.size() == 1 },
+                { assert process.out.demux_fastq.size() == 0 },
+                { assert process.out.demux_bam.size() == 1 },
+            )
+        }
+    }
+}
+
+// take:
+// val_model         // Specify a short code like HAC or SUP
+// val_bc_kit        // The barcode kit to demultiplex against
+// val_check_barcode // Specifies if the run directory should be searched for a valid barcode kit
+// val_bc_parse_pos  // The parse position to substring the barcode from in the meta data
+// val_batch_num     // Number of files in a dorado batch
+// val_run_dir       // The string path of the nanopore run directory
+// val_bam           // The string path of a BAM file to use instead of basecalling
+// val_resume_bam    // The string path of a BAM file to resume basecalling from
+// val_emit_bam      // Defines whether demux outputs a bam or fastq file
+// val_samplesheet   // The string path of the samplesheet to parse for metadata if given
+
+// emit:
+// pod5        = ch_pod5_files  // channel: [ path(pod5) ]
+// bam         = ch_bam         // channel: [ val(meta), path(bam) ]
+// demux_fastq = ch_demux_fastq // channel: [ val(meta), path(fastq) ]
+// demux_bam   = ch_demux_bam   // channel: [ val(meta), path(bam) ]
+// versions    = ch_versions    // channel: path(versions.yml)

@@ -1,0 +1,47 @@
+{
+    "name": "",
+    "homePage": "",
+    "repos": {
+        "https://github.com/FrancisCrickInstitute/nextflow-modules": {
+            "modules": {
+                "francis-crick-institute": {
+                    "ont_dorado/basecaller": {
+                        "branch": "main",
+                        "git_sha": "ab53bbf739741fd12c69c3365542a12c38414675",
+                        "installed_by": ["modules"]
+                    },
+                    "ont_dorado/demux": {
+                        "branch": "main",
+                        "git_sha": "d62c969d3a245a18d7442ff4db78b17913631884",
+                        "installed_by": ["modules"]
+                    },
+                    "ont_dorado/summary": {
+                        "branch": "main",
+                        "git_sha": "d7662cad6a249033c9f0be32d87e02348215e7a7",
+                        "installed_by": ["modules"]
+                    }
+                }
+            },
+            "subworkflows": {
+                "francis-crick-institute": {
+                    "ont/demultiplex": {
+                        "branch": "main",
+                        "git_sha": "d62c969d3a245a18d7442ff4db78b17913631884",
+                        "installed_by": ["subworkflows"]
+                    }
+                }
+            }
+        },
+        "https://github.com/nf-core/modules.git": {
+            "modules": {
+                "nf-core": {
+                    "samtools/merge": {
+                        "branch": "master",
+                        "git_sha": "04fbbc7c43cebc0b95d5b126f6d9fe4effa33519",
+                        "installed_by": ["modules"]
+                    }
+                }
+            }
+        }
+    }
+}

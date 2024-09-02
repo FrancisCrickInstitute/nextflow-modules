@@ -1,144 +1,150 @@
-include { WISECONDORX_CONVERT } from '../../../modules/nf-core/wisecondorx/convert/main'
-include { WISECONDORX_PREDICT } from '../../../modules/nf-core/wisecondorx/predict/main'
+/*
+Subworkflow for basecalling and demultiplexing nanopore data
+*/
+
+include { ONT_DORADO_BASECALLER               } from '../../../../modules/francis-crick-institute/ont_dorado/basecaller/main'
+include { ONT_DORADO_DEMUX                    } from '../../../../modules/francis-crick-institute/ont_dorado/demux/main'
+include { SAMTOOLS_MERGE as MERGE_BASECALLING } from '../../../../modules/nf-core/samtools/merge/main'
+
+// Valid BC Kits
+def valid_bc_kits = [
+    "EXP-NBD103",
+    "EXP-NBD104",
+    "EXP-NBD114",
+    "EXP-NBD196",
+    "EXP-PBC001",
+    "EXP-PBC096",
+    "SQK-16S024",
+    "SQK-16S114-24",
+    "SQK-LWB001",
+    "SQK-MLK111-96-XL",
+    "SQK-MLK114-96-XL",
+    "SQK-NBD111-24",
+    "SQK-NBD111-96",
+    "SQK-NBD114-24",
+    "SQK-NBD114-96",
+    "SQK-PBK004",
+    "SQK-PCB109",
+    "SQK-PCB110",
+    "SQK-PCB111-24",
+    "SQK-PCB114-24",
+    "SQK-RAB201",
+    "SQK-RAB204",
+    "SQK-RBK001",
+    "SQK-RBK004",
+    "SQK-RBK110-96",
+    "SQK-RBK111-24",
+    "SQK-RBK111-96",
+    "SQK-RBK114-24",
+    "SQK-RBK114-96",
+    "SQK-RLB001",
+    "SQK-RPB004",
+    "SQK-RPB114-24",
+    "TWIST-ALL",
+    "VSK-PTC001",
+    "VSK-VMK001",
+    "VSK-VMK004",
+    "VSK-VPS001"
+]
+
+def find_bc_kit(run_dir) {
+    // Find the summary file if it exists
+    def run_dir_path = new File(run_dir)
+    def summary_file_name = run_dir_path.list().find { it.contains('final_summary') && it.endsWith('.txt') }
+    if (!summary_file_name) {
+        return null
+    }
+
+    // Load summary file content
+    def summary_file = new File(run_dir_path, summary_file_name)
+    def summary_content = summary_file.readLines().join('\n')
+
+    // Find the first matching barcode kit in the summary file
+    def bc_kit = valid_bc_kits.find { summary_content.contains(it) }
+    return bc_kit
+}
 
 workflow ONT_DEMULTIPLEX {
 
     take:
-    val_dorado_auto_model // Specify a short code like HAC or SUP
-    val_dorado_model      // Specify an exact model which will override the previous
-
-    // ch_bam          // channel: [ val(meta), path(bam), path(bai) ]
-    // ch_fasta        // channel: [ val(meta2), path(fasta) ]
-    // ch_fai          // channel: [ val(meta3), path(fai) ]
-    // ch_ref          // channel: [ val(meta4), path(reference) ]
-    // ch_blacklist    // channel: [ val(meta5), path(blacklist) ]
-
+    val_model         // Specify a short code like HAC or SUP
+    val_bc_kit        // The barcode kit to demultiplex against
+    val_check_barcode // Specifies if the run directory should be searched for a valid barcode kit
+    val_bc_parse_pos  // The parse position to substring the barcode from in the meta data
+    val_batch_num     // Number of files in a dorado batch
+    val_run_dir       // The string path of the nanopore run directory
+    val_bam           // The string path of a BAM file to use instead of basecalling
+    val_resume_bam    // The string path of a BAM file to resume basecalling from
+    val_emit_bam      // Defines whether demux outputs a bam or fastq file
+    val_samplesheet   // The string path of the samplesheet to parse for metadata if given
+ 
     main:
 
+    // Init
     ch_versions = Channel.empty()
 
-
-    emit:
-    // aberrations_bed = WISECONDORX_PREDICT.out.aberrations_bed   // channel: [ val(meta), path(bed) ]
-    // bins_bed        = WISECONDORX_PREDICT.out.bins_bed          // channel: [ val(meta), path(bed) ]
-    // segments_bed    = WISECONDORX_PREDICT.out.segments_bed      // channel: [ val(meta), path(bed) ]
-    // chr_statistics  = WISECONDORX_PREDICT.out.chr_statistics    // channel: [ val(meta), path(txt) ]
-    // chr_plots       = WISECONDORX_PREDICT.out.chr_plots         // channel: [ val(meta), [ path(png), path(png), ... ] ]
-    // genome_plot     = WISECONDORX_PREDICT.out.genome_plot       // channel: [ val(meta), path(png) ]
-
-    // versions        = ch_versions                               // channel: path(versions.yml)
-}
-
-
-// Select dorado model
-// Dorado models can be selected by auto selection (e.g. hac selects the latest compatible hac model) or by direct model selection.
-// In the case of direct selection, we need to add the container path to the model.
-dorado_model = params.dorado_auto_model
-if(params.dorado_model) {
-    dorado_model = "/home/" + params.dorado_model
-}
-
-// Check bc-kit
-def dorado_bc_kit = null
-if(params.dorado_bc_kit && !(params.dorado_bc_kit in params.bc_kits)) {
-    exit 1, "Invalid barcode kit specified: ${params.dorado_bc_kit}"
-}
-// Extract barcode kit value from the summary file
-if (!params.dorado_bc_kit) {
-    // Find the summary file
-    def summaryFileDir = new File(params.run_dir)
-    def summaryFileName = summaryFileDir.list().find { it.contains('final_summary') && it.endsWith('.txt') }
-    // Check if a summary file was found
-    if (!summaryFileName) {
-        exit 1, "No final summary file found in ${summaryFileDir}."
-    }
-    // Create a File object from the filename
-    def summaryFile = new File(summaryFileDir, summaryFileName)
-    // Read the entire content of the summary file as a single string
-    def summaryContent = summaryFile.readLines().join('\n')
-
-    // Find the first matching barcode kit in the summary file
-    def extrapolatedBcKit = params.bc_kits.find { bc_kit ->
-        summaryContent.contains(bc_kit)
+    // Check bc-kit is valid if supplied by user
+    def bc_kit = null
+    if(val_bc_kit != null && !(val_bc_kit in valid_bc_kits)) {
+        exit 1, "Invalid barcode kit specified: ${val_bc_kit}"
     }
 
-    // Set `params.dorado_bc_kit` to the found kit or null if no match
-    dorado_bc_kit = extrapolatedBcKit ?: null
-}
-
-// Extract run_id
-def runid = file(params.run_dir).name
-
-
-  //
-    // CHANNEL: Adding all pod5 files
-    //
-    ch_pod5_files         = Channel.fromPath("${params.run_dir}/pod5/*.pod5")
-    ch_pod5_files_pass    = Channel.fromPath("${params.run_dir}/pod5_pass/*.pod5")
-    ch_pod5_files_fail    = Channel.fromPath("${params.run_dir}/pod5_fail/*.pod5")
-    ch_pod5_files_skipped = Channel.fromPath("${params.run_dir}/pod5_skipped/*.pod5")
-    ch_pod5_files         = ch_pod5_files_pass.mix(ch_pod5_files_fail).mix(ch_pod5_files_skipped).mix(ch_pod5_files)
-    ch_collected_pod5     = ch_pod5_files.collect().ifEmpty([])
+    // Try to resolve bc_kit
+    if(val_run_dir != null && val_bc_kit == null) {
+        bc_kit = find_bc_kit(val_run_dir)
+        if(bc_kit) { log.warn("Barcode Kit found from summary file: ${bc_kit}") }
+    }
 
     //
-    // CHANNEL: Put all pod5 generated files and their corresponding sample IDs into a single channel 
+    // CHANNEL: Add all pod5 files
     //
-    ch_pod5_files = ch_pod5_files
-        .collate(params.dorado_batch_num)
-        .map{ [[ id: it[0].simpleName.substring(0, 26) ], it ] }
+    ch_pod5_files = Channel.empty()
+    if(val_run_dir != null) {
+        ch_pod5_files         = Channel.fromPath("${val_run_dir}/pod5/*.pod5")
+        ch_pod5_files_pass    = Channel.fromPath("${val_run_dir}/pod5_pass/*.pod5")
+        ch_pod5_files_fail    = Channel.fromPath("${val_run_dir}/pod5_fail/*.pod5")
+        ch_pod5_files_skipped = Channel.fromPath("${val_run_dir}/pod5_skipped/*.pod5")
+        ch_pod5_files         = ch_pod5_files_pass.mix(ch_pod5_files_fail).mix(ch_pod5_files_skipped).mix(ch_pod5_files)
+
+        //
+        // CHANNEL: Collate pod5 files into batches
+        //
+        ch_pod5_files = ch_pod5_files
+            .collate(val_batch_num)
+            .map{ [[ id: it[0].simpleName.substring(0, 26) ], it ] }
+    }
 
     //
-    // CHANNEL: Adding bam files to a channel if it exists
+    // CHANNEL: Add bam file to a channel if it exists
     //
     ch_bam = Channel.empty()
-    if (params.bam) {
-        ch_bam = Channel.from(file(params.bam, checkIfExists: true))
+    if (val_bam != null) {
+        ch_bam = Channel.from(file(val_bam, checkIfExists: true))
             .map{ [ [ id: it.simpleName ], it ] }
     }
 
     //
-    // CHANNEL: Load samplesheet
+    // CHANNEL: Add resume bam file to a channel if it exists
     //
-    if(params.samplesheet) {
-        ch_samplesheet = Channel.from(file(params.samplesheet))
+    ch_resume_bam = Channel.empty()
+    if (val_resume_bam != null) {
+        ch_resume_bam = Channel.from(file(val_resume_bam, checkIfExists: true))
+            .map{ [ [ id: it.simpleName ], it ] }
     }
 
-    //
-    // SUBWORKFLOW: check input samplesheet and add relevant info to metadata
-    //
-    SAMPLESHEET_PARSE (
-        ch_samplesheet
-    )
-    ch_versions = ch_versions.mix(SAMPLESHEET_PARSE.out.versions)
-    ch_meta     = SAMPLESHEET_PARSE.out.meta
-
-    //
-    // CHANNEL: extract run ID name and assign to metadata
-    //
-    ch_meta = ch_meta.map{
-        it.run_id = runid 
-        it.id = it.sample_id
-        it.remove("sample_id")
-        it
-    }
-
-    //
-    // CHANNEL: Collect barcode names
-    //
-    ch_barcodes = ch_meta.map{ it.barcode }.toSortedList()
-
-    if (params.run_basecaller) {
+    // Only run if a bam file wasnt supplied
+    if(val_bam == null) {
         //
         // MODULE: Generate a bam file using pod5 files and any supplied bam to resume from
         //
-        DORADO_BASECALLER (
+        ONT_DORADO_BASECALLER (
             ch_pod5_files,
-            params.bam ? ch_bam.map{it[1]} : [],
-            dorado_model,
-            dorado_bc_kit ?: []
+            val_resume_bam ? ch_resume_bam.map{it[1]} : [],
+            val_model,
+            bc_kit ?: []
         )
-        ch_versions = ch_versions.mix(DORADO_BASECALLER.out.versions)
-        ch_bam      = DORADO_BASECALLER.out.bam
+        ch_versions = ch_versions.mix(ONT_DORADO_BASECALLER.out.versions)
+        ch_bam      = ONT_DORADO_BASECALLER.out.bam
 
         //
         // CHANNEL: Create basecalling merge channels
@@ -164,16 +170,34 @@ def runid = file(params.run_dir).name
         ch_bam      = MERGE_BASECALLING.out.bam.mix(ch_bc_merge.pass)
     }
 
-    if (params.run_demux) {
+    //
+    // MODULE: Generate demultiplexed bam or fastq files
+    //
+    ONT_DORADO_DEMUX (
+        ch_bam,
+        val_emit_bam
+    )
+    ch_versions    = ch_versions.mix(ONT_DORADO_DEMUX.out.versions)
+    ch_demux_bam   = ONT_DORADO_DEMUX.out.bam
+    ch_demux_fastq = ONT_DORADO_DEMUX.out.fastq
+
+    if(val_samplesheet) {
         //
-        // MODULE: Generate demultiplexed bam or fastq files
+        // CHANNEL: Parse samplesheet into metadata
         //
-        DORADO_DEMUX (
-            ch_bam
-        )
-        ch_versions    = ch_versions.mix(DORADO_DEMUX.out.versions)
-        ch_demux_bam   = DORADO_DEMUX.out.bam
-        ch_demux_fastq = DORADO_DEMUX.out.fastq
+        ch_meta = Channel.from(file(val_samplesheet, checkIfExists: true))
+            .splitCsv (header:true, sep:",")
+            .map {
+                it.group = it.group.replaceAll(" ", "_").toLowerCase()
+                it.user = it.user.replaceAll(" ", "_").toLowerCase()
+                if(val_bc_parse_pos != null) {
+                    it.barcode = "barcode" + it.barcode.substring(val_bc_parse_pos, val_bc_parse_pos + 2)
+                }
+                if(bc_kit != null) {
+                    it.barcode = bc_kit + "_" + it.barcode
+                }
+                it
+            }
 
         //
         // CHANNEL: Merge metadata to the demultiplexed fastq file
@@ -191,3 +215,11 @@ def runid = file(params.run_dir).name
             .join( ch_demux_bam.map{it[1]}.flatten().map{ [ it.simpleName, it ] } )
             .map { [ it[1], it[2] ] }
     }
+
+    emit:
+    pod5        = ch_pod5_files  // channel: [ path(pod5) ]
+    bam         = ch_bam         // channel: [ val(meta), path(bam) ]
+    demux_fastq = ch_demux_fastq // channel: [ val(meta), path(fastq) ]
+    demux_bam   = ch_demux_bam   // channel: [ val(meta), path(bam) ]
+    versions    = ch_versions    // channel: path(versions.yml)
+}

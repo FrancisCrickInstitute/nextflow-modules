@@ -24,6 +24,7 @@ process ONT_DORADO_DEMUX {
     dorado demux \\
         --output-dir ./ \\
         --no-classify \\
+        $emit \\
         $args \\
         $bam
 
