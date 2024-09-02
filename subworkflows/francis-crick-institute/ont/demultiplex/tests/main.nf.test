@@ -18,12 +18,13 @@ nextflow_process {
                 input[1] = null
                 input[2] = false
                 input[3] = null
-                input[4] = 999999
-                input[5] = '$baseDir/' + params.test_data_dir + '/ont/seq_runs/pod5_100'
-                input[6] = null
+                input[4] = false
+                input[5] = 999999
+                input[6] = '$baseDir/' + params.test_data_dir + '/ont/seq_runs/pod5_100'
                 input[7] = null
-                input[8] = false
-                input[9] = '$baseDir/' + params.test_data_dir + '/ont/seq_runs/pod5_100/samplesheet.csv'
+                input[8] = null
+                input[9] = false
+                input[10] = '$baseDir/' + params.test_data_dir + '/ont/seq_runs/pod5_100/samplesheet.csv'
                 """
             }
         }
@@ -49,12 +50,13 @@ nextflow_process {
                 input[1] = null
                 input[2] = false
                 input[3] = null
-                input[4] = 999999
-                input[5] = '$baseDir/' + params.test_data_dir + '/ont/seq_runs/pod5_100'
-                input[6] = null
+                input[4] = false
+                input[5] = 999999
+                input[6] = '$baseDir/' + params.test_data_dir + '/ont/seq_runs/pod5_100'
                 input[7] = null
-                input[8] = true
-                input[9] = '$baseDir/' + params.test_data_dir + '/ont/seq_runs/pod5_100/samplesheet.csv'
+                input[8] = null
+                input[9] = true
+                input[10] = '$baseDir/' + params.test_data_dir + '/ont/seq_runs/pod5_100/samplesheet.csv'
                 """
             }
         }
@@ -69,6 +71,162 @@ nextflow_process {
             )
         }
     }
+
+    test("simple_batch") {
+        tag "ont_demux/simple_batch"
+
+        when {
+            process {
+                """
+                input[0] = "hac"
+                input[1] = null
+                input[2] = true
+                input[3] = null
+                input[4] = false
+                input[5] = 4
+                input[6] = 's3://crick-pipeline-technologies-nextflow-test-data/ont/batch_pod5'
+                input[7] = null
+                input[8] = null
+                input[9] = false
+                input[10] = '$baseDir/' + params.test_data_dir + '/ont/seq_runs/pod5_100/samplesheet.csv'
+                """
+            }
+        }
+
+        then {
+            assertAll (
+                { assert process.success },
+                { assert snapshot(process.out.versions).match()},
+                { assert process.out.bam.size() == 1 },
+                { assert process.out.demux_fastq.size() == 1 },
+                { assert process.out.demux_bam.size() == 0 },
+            )
+        }
+    }
+
+    test("simplex_bckit") {
+        tag "ont_demux/simplex_bckit"
+
+        when {
+            process {
+                """
+                input[0] = "hac"
+                input[1] = "SQK-PCB114-24"
+                input[2] = false
+                input[3] = null
+                input[4] = false
+                input[5] = 999999
+                input[6] = '$baseDir/' + params.test_data_dir + '/ont/seq_runs/pod5_100'
+                input[7] = null
+                input[8] = null
+                input[9] = true
+                input[10] = '$baseDir/' + params.test_data_dir + '/ont/seq_runs/pod5_100/samplesheet.csv'
+                """
+            }
+        }
+
+        then {
+            assertAll (
+                { assert process.success }
+            )
+        }
+    }
+
+    test("simplex_resume") {
+        tag "ont_demux/simplex_resume"
+
+        when {
+            process {
+                """
+                input[0] = "hac"
+                input[1] = null
+                input[2] = false
+                input[3] = null
+                input[4] = false
+                input[5] = 999999
+                input[6] = '$baseDir/' + params.test_data_dir + '/ont/seq_runs/pod5_100'
+                input[7] = null
+                input[8] = '$baseDir/' + params.test_data_dir + '/ont/seq_runs/pod5_100/pod5.bam'
+                input[9] = false
+                input[10] = '$baseDir/' + params.test_data_dir + '/ont/seq_runs/pod5_100/samplesheet.csv'
+                """
+            }
+        }
+
+        then {
+            assertAll (
+                { assert process.success },
+                { assert snapshot(process.out.versions).match()},
+                { assert process.out.bam.size() == 1 },
+                { assert process.out.demux_fastq.size() == 1 },
+                { assert process.out.demux_bam.size() == 0 },
+            )
+        }
+    }
+
+    test("multiplex_default") {
+        tag "ont_demux/multiplex_default"
+
+        when {
+            process {
+                """
+                input[0] = "hac"
+                input[1] = null
+                input[2] = true
+                input[3] = null
+                input[4] = false
+                input[5] = 999999
+                input[6] = '$baseDir/' + params.test_data_dir + '/ont/seq_runs/multiplexed'
+                input[7] = '$baseDir/' + params.test_data_dir + '/ont/seq_runs/multiplexed/1000_reads_6_samples.bam'
+                input[8] = null
+                input[9] = false
+                input[10] = '$baseDir/' + params.test_data_dir + '/ont/seq_runs/multiplexed/samplesheet.csv'
+                """
+            }
+        }
+
+        then {
+            assertAll (
+                { assert process.success },
+                { assert snapshot(process.out.versions).match()},
+                { assert process.out.bam.size() == 1 },
+                { assert process.out.demux_fastq.size() == 6 },
+                { assert process.out.demux_bam.size() == 0 },
+            )
+        }
+    }
+
+    test("multiplex_parsebc") {
+        tag "ont_demux/multiplex_parsebc"
+
+        when {
+            process {
+                """
+                input[0] = "hac"
+                input[1] = null
+                input[2] = true
+                input[3] = 2
+                input[4] = false
+                input[5] = 999999
+                input[6] = '$baseDir/' + params.test_data_dir + '/ont/seq_runs/multiplexed'
+                input[7] = '$baseDir/' + params.test_data_dir + '/ont/seq_runs/multiplexed/1000_reads_6_samples.bam'
+                input[8] = null
+                input[9] = false
+                input[10] = '$baseDir/' + params.test_data_dir + '/ont/seq_runs/multiplexed/samplesheet_parsebc.csv'
+                """
+            }
+        }
+
+        then {
+            assertAll (
+                { assert process.success },
+                { assert snapshot(process.out.versions).match()},
+                { assert process.out.bam.size() == 1 },
+                { assert process.out.demux_fastq.size() == 6 },
+                { assert process.out.demux_bam.size() == 0 },
+            )
+        }
+    }
 }
 
 // take:
@@ -76,6 +234,7 @@ nextflow_process {
 // val_bc_kit        // The barcode kit to demultiplex against
 // val_check_barcode // Specifies if the run directory should be searched for a valid barcode kit
 // val_bc_parse_pos  // The parse position to substring the barcode from in the meta data
+// val_append_bc     // Appends bc-kit to sample matching
 // val_batch_num     // Number of files in a dorado batch
 // val_run_dir       // The string path of the nanopore run directory
 // val_bam           // The string path of a BAM file to use instead of basecalling

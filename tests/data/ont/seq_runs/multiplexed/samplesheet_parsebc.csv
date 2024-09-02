@@ -1,0 +1,8 @@
+sample_id,sample_name,group,user,project_id,barcode
+sample01,my_sample_1,briscoe,john.smith,DN23241,NB01 (GTTTTC)
+sample02,my_sample_2,briscoe,john.smith,DN23241,NB02 (GTTTTC)
+sample03,my_sample_3,briscoe,rachel.smith,DN23242,NB03 (GTTTTC)
+sample04,my_sample_4,briscoe,rachel.smith,DN23242,NB04 (GTTTTC)
+sample05,my_sample_5,briscoe,sam.smith,DN23243,NB05 (GTTTTC)
+sample06,my_sample_6,briscoe,sam.smith,DN23243,NB06 (GTTTTC)
+fakesample07,my_sample_7,briscoe,sam.smith,DN23243,NB07 (GTTTTC)

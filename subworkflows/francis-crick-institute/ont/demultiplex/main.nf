@@ -47,7 +47,7 @@ def valid_bc_kits = [
     "VSK-VPS001"
 ]
 
-def find_bc_kit(run_dir) {
+def find_bc_kit(run_dir, valid_bc_kits) {
     // Find the summary file if it exists
     def run_dir_path = new File(run_dir)
     def summary_file_name = run_dir_path.list().find { it.contains('final_summary') && it.endsWith('.txt') }
@@ -71,6 +71,7 @@ workflow ONT_DEMULTIPLEX {
     val_bc_kit        // The barcode kit to demultiplex against
     val_check_barcode // Specifies if the run directory should be searched for a valid barcode kit
     val_bc_parse_pos  // The parse position to substring the barcode from in the meta data
+    val_append_bc     // Appends bc-kit to sample matching
     val_batch_num     // Number of files in a dorado batch
     val_run_dir       // The string path of the nanopore run directory
     val_bam           // The string path of a BAM file to use instead of basecalling
@@ -83,15 +84,18 @@ workflow ONT_DEMULTIPLEX {
     // Init
     ch_versions = Channel.empty()
 
-    // Check bc-kit is valid if supplied by user
+    // Check bc-kit is valid if supplied by user and assign if it is
     def bc_kit = null
     if(val_bc_kit != null && !(val_bc_kit in valid_bc_kits)) {
         exit 1, "Invalid barcode kit specified: ${val_bc_kit}"
     }
+    else if (val_bc_kit != null) {
+        bc_kit = val_bc_kit
+    }
 
     // Try to resolve bc_kit
     if(val_run_dir != null && val_bc_kit == null) {
-        bc_kit = find_bc_kit(val_run_dir)
+        bc_kit = find_bc_kit(val_run_dir, valid_bc_kits)
         if(bc_kit) { log.warn("Barcode Kit found from summary file: ${bc_kit}") }
     }
 
@@ -193,7 +197,7 @@ workflow ONT_DEMULTIPLEX {
                 if(val_bc_parse_pos != null) {
                     it.barcode = "barcode" + it.barcode.substring(val_bc_parse_pos, val_bc_parse_pos + 2)
                 }
-                if(bc_kit != null) {
+                if(bc_kit != null && val_append_bc == true) {
                     it.barcode = bc_kit + "_" + it.barcode
                 }
                 it
