@@ -4,7 +4,6 @@ process DORADO_DEMUX {
 
     container 'docker.io/thecrick/pipetech_dorado:0.7.3-linux-x64'
 
-
     input:
     tuple val(meta), path(bam)
     val emit_bam

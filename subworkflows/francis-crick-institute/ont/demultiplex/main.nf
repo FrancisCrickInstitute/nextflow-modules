@@ -55,6 +55,8 @@ def find_bc_kit(run_dir, valid_bc_kits) {
         return null
     }
 
+    
+
     // Load summary file content
     def summary_file = new File(run_dir_path, summary_file_name)
     def summary_content = summary_file.readLines().join('\n')
