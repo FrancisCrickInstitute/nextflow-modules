@@ -1,4 +1,4 @@
-process ONT_DORADO_DEMUX {
+process DORADO_DEMUX {
     tag "$meta.id"
     label 'process_high'
 

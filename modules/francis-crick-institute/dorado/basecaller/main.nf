@@ -1,4 +1,4 @@
-process ONT_DORADO_BASECALLER {
+process DORADO_BASECALLER {
     tag "$meta.id"
     label 'process_high'
 

@@ -1,8 +1,8 @@
 nextflow_process {
 
-    name "Test Module ONT_DORADO_SUMMARY"
+    name "Test Module DORADO_SUMMARY"
     script "../main.nf"
-    process "ONT_DORADO_SUMMARY"
+    process "DORADO_SUMMARY"
 
     tag "modules"
     tag "ont"

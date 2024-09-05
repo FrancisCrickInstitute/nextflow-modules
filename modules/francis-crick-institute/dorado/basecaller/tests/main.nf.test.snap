@@ -2,37 +2,37 @@
     "pod5_resume": {
         "content": [
             [
-                "versions.yml:md5,513856826291b2061d33db76a43805aa"
+                "versions.yml:md5,ec84467cd957788bd357bfb86e31b871"
             ]
         ],
         "meta": {
             "nf-test": "0.9.0",
             "nextflow": "24.04.4"
         },
-        "timestamp": "2024-08-29T16:45:15.498148"
+        "timestamp": "2024-09-05T14:31:07.830017"
     },
     "pod5": {
         "content": [
             [
-                "versions.yml:md5,513856826291b2061d33db76a43805aa"
+                "versions.yml:md5,ec84467cd957788bd357bfb86e31b871"
             ]
         ],
         "meta": {
             "nf-test": "0.9.0",
             "nextflow": "24.04.4"
         },
-        "timestamp": "2024-08-29T16:44:29.467459"
+        "timestamp": "2024-09-05T14:30:23.221196"
     },
     "pod5_bckit": {
         "content": [
             [
-                "versions.yml:md5,513856826291b2061d33db76a43805aa"
+                "versions.yml:md5,ec84467cd957788bd357bfb86e31b871"
             ]
         ],
         "meta": {
             "nf-test": "0.9.0",
             "nextflow": "24.04.4"
         },
-        "timestamp": "2024-08-29T16:44:52.415841"
+        "timestamp": "2024-09-05T14:30:45.450504"
     }
 }

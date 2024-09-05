@@ -3,46 +3,46 @@
         "content": [
             {
                 "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        [
-                            "barcode01.bam:md5,d0b28dace9bdc1ae921b0e0d092239d1",
-                            "barcode02.bam:md5,8a9bd32509eab5c3989624d2109feae5",
-                            "barcode03.bam:md5,5289f36ec2fa8bda382b47031ee77db8",
-                            "barcode04.bam:md5,eb9a89c095a9cae2808c1145337e88aa",
-                            "barcode05.bam:md5,7dfa0c31f8a7c648fbcb371c5afa9541",
-                            "barcode06.bam:md5,03b2229ab201fa51f3ee8f3c6990e9e8"
-                        ]
-                    ]
+                    
                 ],
                 "1": [
-                    
-                ],
-                "2": [
-                    "versions.yml:md5,196d7a6e933fed148666703bc64f3bf0"
-                ],
-                "bam": [
                     [
                         {
                             "id": "test"
                         },
                         [
-                            "barcode01.bam:md5,d0b28dace9bdc1ae921b0e0d092239d1",
-                            "barcode02.bam:md5,8a9bd32509eab5c3989624d2109feae5",
-                            "barcode03.bam:md5,5289f36ec2fa8bda382b47031ee77db8",
-                            "barcode04.bam:md5,eb9a89c095a9cae2808c1145337e88aa",
-                            "barcode05.bam:md5,7dfa0c31f8a7c648fbcb371c5afa9541",
-                            "barcode06.bam:md5,03b2229ab201fa51f3ee8f3c6990e9e8"
+                            "barcode01.fastq.gz:md5,a6f60d91a0e6cdac1f3bcd79415a2d6d",
+                            "barcode02.fastq.gz:md5,db3213cc6685a4379f00aad0718fc3e3",
+                            "barcode03.fastq.gz:md5,8d6e8229a3bcbb1f9aa3bcf9821e653d",
+                            "barcode04.fastq.gz:md5,c2fa3323177e508c7a0c37c7c3bcdae4",
+                            "barcode05.fastq.gz:md5,b9ab5f9c808b970664e95833c12d2ffe",
+                            "barcode06.fastq.gz:md5,7a0cad115c6acac739cb7d884e442824"
                         ]
                     ]
                 ],
-                "fastq": [
+                "2": [
+                    "versions.yml:md5,8376afad0a2e464d10badd604ba1315a"
+                ],
+                "bam": [
                     
                 ],
+                "fastq": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "barcode01.fastq.gz:md5,a6f60d91a0e6cdac1f3bcd79415a2d6d",
+                            "barcode02.fastq.gz:md5,db3213cc6685a4379f00aad0718fc3e3",
+                            "barcode03.fastq.gz:md5,8d6e8229a3bcbb1f9aa3bcf9821e653d",
+                            "barcode04.fastq.gz:md5,c2fa3323177e508c7a0c37c7c3bcdae4",
+                            "barcode05.fastq.gz:md5,b9ab5f9c808b970664e95833c12d2ffe",
+                            "barcode06.fastq.gz:md5,7a0cad115c6acac739cb7d884e442824"
+                        ]
+                    ]
+                ],
                 "versions": [
-                    "versions.yml:md5,196d7a6e933fed148666703bc64f3bf0"
+                    "versions.yml:md5,8376afad0a2e464d10badd604ba1315a"
                 ]
             }
         ],
@@ -50,7 +50,7 @@
             "nf-test": "0.9.0",
             "nextflow": "24.04.4"
         },
-        "timestamp": "2024-08-29T17:00:04.744686"
+        "timestamp": "2024-09-05T14:31:10.999587"
     },
     "bam": {
         "content": [
@@ -74,7 +74,7 @@
                     
                 ],
                 "2": [
-                    "versions.yml:md5,196d7a6e933fed148666703bc64f3bf0"
+                    "versions.yml:md5,8376afad0a2e464d10badd604ba1315a"
                 ],
                 "bam": [
                     [
@@ -95,7 +95,7 @@
                     
                 ],
                 "versions": [
-                    "versions.yml:md5,196d7a6e933fed148666703bc64f3bf0"
+                    "versions.yml:md5,8376afad0a2e464d10badd604ba1315a"
                 ]
             }
         ],
@@ -103,6 +103,6 @@
             "nf-test": "0.9.0",
             "nextflow": "24.04.4"
         },
-        "timestamp": "2024-08-29T17:00:56.097971"
+        "timestamp": "2024-09-05T14:31:13.587299"
     }
 }

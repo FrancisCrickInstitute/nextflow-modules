@@ -1,4 +1,4 @@
-process ONT_DORADO_SUMMARY {
+process DORADO_SUMMARY {
     tag "$meta.id"
     label 'process_medium'
 

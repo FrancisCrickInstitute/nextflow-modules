@@ -2,8 +2,8 @@
 Subworkflow for basecalling and demultiplexing nanopore data
 */
 
-include { ONT_DORADO_BASECALLER               } from '../../../../modules/francis-crick-institute/ont_dorado/basecaller/main'
-include { ONT_DORADO_DEMUX                    } from '../../../../modules/francis-crick-institute/ont_dorado/demux/main'
+include { DORADO_BASECALLER                   } from '../../../../modules/francis-crick-institute/dorado/basecaller/main'
+include { DORADO_DEMUX                        } from '../../../../modules/francis-crick-institute/dorado/demux/main'
 include { SAMTOOLS_MERGE as MERGE_BASECALLING } from '../../../../modules/nf-core/samtools/merge/main'
 
 // Valid BC Kits
@@ -141,14 +141,14 @@ workflow ONT_DEMULTIPLEX {
         //
         // MODULE: Generate a bam file using pod5 files and any supplied bam to resume from
         //
-        ONT_DORADO_BASECALLER (
+        DORADO_BASECALLER (
             ch_pod5_files,
             val_resume_bam ? ch_resume_bam.map{it[1]} : [],
             val_model,
             bc_kit ?: []
         )
-        ch_versions = ch_versions.mix(ONT_DORADO_BASECALLER.out.versions)
-        ch_bam      = ONT_DORADO_BASECALLER.out.bam
+        ch_versions = ch_versions.mix(DORADO_BASECALLER.out.versions)
+        ch_bam      = DORADO_BASECALLER.out.bam
 
         //
         // CHANNEL: Create basecalling merge channels
@@ -177,13 +177,13 @@ workflow ONT_DEMULTIPLEX {
     //
     // MODULE: Generate demultiplexed bam or fastq files
     //
-    ONT_DORADO_DEMUX (
+    DORADO_DEMUX (
         ch_bam,
         val_emit_bam
     )
-    ch_versions    = ch_versions.mix(ONT_DORADO_DEMUX.out.versions)
-    ch_demux_bam   = ONT_DORADO_DEMUX.out.bam
-    ch_demux_fastq = ONT_DORADO_DEMUX.out.fastq
+    ch_versions    = ch_versions.mix(DORADO_DEMUX.out.versions)
+    ch_demux_bam   = DORADO_DEMUX.out.bam
+    ch_demux_fastq = DORADO_DEMUX.out.fastq
 
     if(val_samplesheet) {
         //
