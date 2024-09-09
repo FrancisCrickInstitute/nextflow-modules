@@ -1,2 +1,2 @@
-sample_id,sample_name,group,user,project_id,barcode
+id,sample_name,group,user,project_id,barcode
 sample_01,my_sample,Asf team,john.smith,DN23241,unclassified

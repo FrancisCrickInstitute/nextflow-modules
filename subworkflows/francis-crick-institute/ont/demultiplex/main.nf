@@ -55,8 +55,6 @@ def find_bc_kit(run_dir, valid_bc_kits) {
         return null
     }
 
-    
-
     // Load summary file content
     def summary_file = new File(run_dir_path, summary_file_name)
     def summary_content = summary_file.readLines().join('\n')
@@ -79,8 +77,8 @@ workflow ONT_DEMULTIPLEX {
     val_bam           // The string path of a BAM file to use instead of basecalling
     val_resume_bam    // The string path of a BAM file to resume basecalling from
     val_emit_bam      // Defines whether demux outputs a bam or fastq file
-    val_samplesheet   // The string path of the samplesheet to parse for metadata if given
- 
+    val_samplesheet   // The string path of the samplesheet to parse for metadata
+
     main:
 
     // Init
@@ -100,6 +98,23 @@ workflow ONT_DEMULTIPLEX {
         bc_kit = find_bc_kit(val_run_dir, valid_bc_kits)
         if(bc_kit) { log.warn("Barcode Kit found from summary file: ${bc_kit}") }
     }
+
+    //
+    // CHANNEL: Parse samplesheet into metadata
+    //
+    ch_sample_meta = Channel.from(file(val_samplesheet, checkIfExists: true))
+        .splitCsv (header:true, sep:",")
+        .map {
+            it.group = it.group.replaceAll(" ", "_").toLowerCase()
+            it.user = it.user.replaceAll(" ", "_").toLowerCase()
+            if(val_bc_parse_pos != null) {
+                it.barcode = "barcode" + it.barcode.substring(val_bc_parse_pos, val_bc_parse_pos + 2)
+            }
+            if(bc_kit != null && val_append_bc == true) {
+                it.barcode = bc_kit + "_" + it.barcode
+            }
+            it
+        }
 
     //
     // CHANNEL: Add all pod5 files
@@ -177,55 +192,44 @@ workflow ONT_DEMULTIPLEX {
     }
 
     //
+    // CHANNEL: Add sample meta to main data channel
+    //
+    ch_demux_input = ch_sample_meta
+        .collect()
+        .map{[it]}
+        .combine(ch_bam.collect{it[1]})
+
+    //
     // MODULE: Generate demultiplexed bam or fastq files
     //
     DORADO_DEMUX (
-        ch_bam,
+        ch_demux_input,
         val_emit_bam
     )
     ch_versions    = ch_versions.mix(DORADO_DEMUX.out.versions)
     ch_demux_bam   = DORADO_DEMUX.out.bam
     ch_demux_fastq = DORADO_DEMUX.out.fastq
 
-    if(val_samplesheet) {
-        //
-        // CHANNEL: Parse samplesheet into metadata
-        //
-        ch_meta = Channel.from(file(val_samplesheet, checkIfExists: true))
-            .splitCsv (header:true, sep:",")
-            .map {
-                it.group = it.group.replaceAll(" ", "_").toLowerCase()
-                it.user = it.user.replaceAll(" ", "_").toLowerCase()
-                if(val_bc_parse_pos != null) {
-                    it.barcode = "barcode" + it.barcode.substring(val_bc_parse_pos, val_bc_parse_pos + 2)
-                }
-                if(bc_kit != null && val_append_bc == true) {
-                    it.barcode = bc_kit + "_" + it.barcode
-                }
-                it
-            }
+    //
+    // CHANNEL: Merge metadata to the demultiplexed fastq file
+    //
+    ch_demux_fastq_meta = ch_sample_meta
+        .map { [it.id, it] }
+        .join( ch_demux_fastq.map{it[1]}.flatten().map{ [ it.simpleName, it ] } )
+        .map { [ it[1], it[2] ] }
 
-        //
-        // CHANNEL: Merge metadata to the demultiplexed fastq file
-        //
-        ch_demux_fastq = ch_meta
-            .map { [it.barcode, it] }
-            .join( ch_demux_fastq.map{it[1]}.flatten().map{ [ it.simpleName, it ] } )
-            .map { [ it[1], it[2] ] }
-
-        //
-        // CHANNEL: Merge metadata to the demultiplexed bam file
-        //
-        ch_demux_bam = ch_meta
-            .map { [it.barcode, it] }
-            .join( ch_demux_bam.map{it[1]}.flatten().map{ [ it.simpleName, it ] } )
-            .map { [ it[1], it[2] ] }
-    }
+    //
+    // CHANNEL: Merge metadata to the demultiplexed bam file
+    //
+    ch_demux_bam_meta = ch_sample_meta
+        .map { [it.id, it] }
+        .join( ch_demux_bam.map{it[1]}.flatten().map{ [ it.simpleName, it ] } )
+        .map { [ it[1], it[2] ] }
 
     emit:
-    pod5        = ch_pod5_files  // channel: [ path(pod5) ]
-    bam         = ch_bam         // channel: [ val(meta), path(bam) ]
-    demux_fastq = ch_demux_fastq // channel: [ val(meta), path(fastq) ]
-    demux_bam   = ch_demux_bam   // channel: [ val(meta), path(bam) ]
-    versions    = ch_versions    // channel: path(versions.yml)
+    pod5        = ch_pod5_files       // channel: [ path(pod5) ]
+    bam         = ch_bam              // channel: [ val(meta), path(bam) ]
+    demux_fastq = ch_demux_fastq_meta // channel: [ val(meta), path(fastq) ]
+    demux_bam   = ch_demux_bam_meta   // channel: [ val(meta), path(bam) ]
+    versions    = ch_versions         // channel: path(versions.yml)
 }

@@ -1,4 +1,4 @@
-sample_id,sample_name,group,user,project_id,barcode
+id,sample_name,group,user,project_id,barcode
 sample01,my_sample_1,briscoe,john.smith,DN23241,NB01 (GTTTTC)
 sample02,my_sample_2,briscoe,john.smith,DN23241,NB02 (GTTTTC)
 sample03,my_sample_3,briscoe,rachel.smith,DN23242,NB03 (GTTTTC)
