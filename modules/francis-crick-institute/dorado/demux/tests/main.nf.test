@@ -16,13 +16,23 @@ nextflow_process {
             process {
                 """
                 input[0] = Channel.of([
-                    [ id:'test' ],
+                [
+                    ['sample_name':'my_sample_1', 'group':'briscoe', 'user':'john.smith', 'project_id':'DN23241', 'barcode':'barcode01', 'run_id':'fake_run_1', 'id':'sample01'],
+                    ['sample_name':'my_sample_2', 'group':'briscoe', 'user':'john.smith', 'project_id':'DN23241', 'barcode':'barcode02', 'run_id':'fake_run_1', 'id':'sample02'],
+                    ['sample_name':'my_sample_3', 'group':'briscoe', 'user':'rachel.smith', 'project_id':'DN23242', 'barcode':'barcode03', 'run_id':'fake_run_1', 'id':'sample03'],
+                    ['sample_name':'my_sample_4', 'group':'briscoe', 'user':'rachel.smith', 'project_id':'DN23242', 'barcode':'barcode04', 'run_id':'fake_run_1', 'id':'sample04'],
+                    ['sample_name':'my_sample_5', 'group':'briscoe', 'user':'sam.smith', 'project_id':'DN23243', 'barcode':'barcode05', 'run_id':'fake_run_1', 'id':'sample05'],
+                    ['sample_name':'my_sample_6', 'group':'briscoe', 'user':'sam.smith', 'project_id':'DN23243', 'barcode':'barcode06', 'run_id':'fake_run_1', 'id':'sample06'],
+                    ['sample_name':'my_sample_7', 'group':'briscoe', 'user':'sam.smith', 'project_id':'DN23243', 'barcode':'barcode07', 'run_id':'fake_run_1', 'id':'fakesample07']
+                    
+                ],
                     file('$baseDir/' + params.test_data_dir + '/ont/seq_runs/multiplexed/1000_reads_6_samples.bam', checkIfExists: true)
                 ])
                 input[1] = false
                 """
             }
         }
+
 
         then {
             assertAll (
@@ -39,7 +49,16 @@ nextflow_process {
             process {
                 """
                 input[0] = Channel.of([
-                    [ id:'test' ],
+                [
+                    ['sample_name':'my_sample_1', 'group':'briscoe', 'user':'john.smith', 'project_id':'DN23241', 'barcode':'barcode01', 'run_id':'fake_run_1', 'id':'sample01'],
+                    ['sample_name':'my_sample_2', 'group':'briscoe', 'user':'john.smith', 'project_id':'DN23241', 'barcode':'barcode02', 'run_id':'fake_run_1', 'id':'sample02'],
+                    ['sample_name':'my_sample_3', 'group':'briscoe', 'user':'rachel.smith', 'project_id':'DN23242', 'barcode':'barcode03', 'run_id':'fake_run_1', 'id':'sample03'],
+                    ['sample_name':'my_sample_4', 'group':'briscoe', 'user':'rachel.smith', 'project_id':'DN23242', 'barcode':'barcode04', 'run_id':'fake_run_1', 'id':'sample04'],
+                    ['sample_name':'my_sample_5', 'group':'briscoe', 'user':'sam.smith', 'project_id':'DN23243', 'barcode':'barcode05', 'run_id':'fake_run_1', 'id':'sample05'],
+                    ['sample_name':'my_sample_6', 'group':'briscoe', 'user':'sam.smith', 'project_id':'DN23243', 'barcode':'barcode06', 'run_id':'fake_run_1', 'id':'sample06'],
+                    ['sample_name':'my_sample_7', 'group':'briscoe', 'user':'sam.smith', 'project_id':'DN23243', 'barcode':'barcode07', 'run_id':'fake_run_1', 'id':'fakesample07']
+                    
+                ],
                     file('$baseDir/' + params.test_data_dir + '/ont/seq_runs/multiplexed/1000_reads_6_samples.bam', checkIfExists: true)
                 ])
                 input[1] = true

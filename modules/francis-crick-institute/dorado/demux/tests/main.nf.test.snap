@@ -7,16 +7,78 @@
                 ],
                 "1": [
                     [
-                        {
-                            "id": "test"
-                        },
                         [
-                            "barcode01.fastq.gz:md5,a6f60d91a0e6cdac1f3bcd79415a2d6d",
-                            "barcode02.fastq.gz:md5,db3213cc6685a4379f00aad0718fc3e3",
-                            "barcode03.fastq.gz:md5,8d6e8229a3bcbb1f9aa3bcf9821e653d",
-                            "barcode04.fastq.gz:md5,c2fa3323177e508c7a0c37c7c3bcdae4",
-                            "barcode05.fastq.gz:md5,b9ab5f9c808b970664e95833c12d2ffe",
-                            "barcode06.fastq.gz:md5,7a0cad115c6acac739cb7d884e442824"
+                            {
+                                "sample_name": "my_sample_1",
+                                "group": "briscoe",
+                                "user": "john.smith",
+                                "project_id": "DN23241",
+                                "barcode": "barcode01",
+                                "run_id": "fake_run_1",
+                                "id": "sample01"
+                            },
+                            {
+                                "sample_name": "my_sample_2",
+                                "group": "briscoe",
+                                "user": "john.smith",
+                                "project_id": "DN23241",
+                                "barcode": "barcode02",
+                                "run_id": "fake_run_1",
+                                "id": "sample02"
+                            },
+                            {
+                                "sample_name": "my_sample_3",
+                                "group": "briscoe",
+                                "user": "rachel.smith",
+                                "project_id": "DN23242",
+                                "barcode": "barcode03",
+                                "run_id": "fake_run_1",
+                                "id": "sample03"
+                            },
+                            {
+                                "sample_name": "my_sample_4",
+                                "group": "briscoe",
+                                "user": "rachel.smith",
+                                "project_id": "DN23242",
+                                "barcode": "barcode04",
+                                "run_id": "fake_run_1",
+                                "id": "sample04"
+                            },
+                            {
+                                "sample_name": "my_sample_5",
+                                "group": "briscoe",
+                                "user": "sam.smith",
+                                "project_id": "DN23243",
+                                "barcode": "barcode05",
+                                "run_id": "fake_run_1",
+                                "id": "sample05"
+                            },
+                            {
+                                "sample_name": "my_sample_6",
+                                "group": "briscoe",
+                                "user": "sam.smith",
+                                "project_id": "DN23243",
+                                "barcode": "barcode06",
+                                "run_id": "fake_run_1",
+                                "id": "sample06"
+                            },
+                            {
+                                "sample_name": "my_sample_7",
+                                "group": "briscoe",
+                                "user": "sam.smith",
+                                "project_id": "DN23243",
+                                "barcode": "barcode07",
+                                "run_id": "fake_run_1",
+                                "id": "fakesample07"
+                            }
+                        ],
+                        [
+                            "sample01.fastq.gz:md5,a6f60d91a0e6cdac1f3bcd79415a2d6d",
+                            "sample02.fastq.gz:md5,db3213cc6685a4379f00aad0718fc3e3",
+                            "sample03.fastq.gz:md5,8d6e8229a3bcbb1f9aa3bcf9821e653d",
+                            "sample04.fastq.gz:md5,c2fa3323177e508c7a0c37c7c3bcdae4",
+                            "sample05.fastq.gz:md5,b9ab5f9c808b970664e95833c12d2ffe",
+                            "sample06.fastq.gz:md5,7a0cad115c6acac739cb7d884e442824"
                         ]
                     ]
                 ],
@@ -28,16 +90,78 @@
                 ],
                 "fastq": [
                     [
-                        {
-                            "id": "test"
-                        },
                         [
-                            "barcode01.fastq.gz:md5,a6f60d91a0e6cdac1f3bcd79415a2d6d",
-                            "barcode02.fastq.gz:md5,db3213cc6685a4379f00aad0718fc3e3",
-                            "barcode03.fastq.gz:md5,8d6e8229a3bcbb1f9aa3bcf9821e653d",
-                            "barcode04.fastq.gz:md5,c2fa3323177e508c7a0c37c7c3bcdae4",
-                            "barcode05.fastq.gz:md5,b9ab5f9c808b970664e95833c12d2ffe",
-                            "barcode06.fastq.gz:md5,7a0cad115c6acac739cb7d884e442824"
+                            {
+                                "sample_name": "my_sample_1",
+                                "group": "briscoe",
+                                "user": "john.smith",
+                                "project_id": "DN23241",
+                                "barcode": "barcode01",
+                                "run_id": "fake_run_1",
+                                "id": "sample01"
+                            },
+                            {
+                                "sample_name": "my_sample_2",
+                                "group": "briscoe",
+                                "user": "john.smith",
+                                "project_id": "DN23241",
+                                "barcode": "barcode02",
+                                "run_id": "fake_run_1",
+                                "id": "sample02"
+                            },
+                            {
+                                "sample_name": "my_sample_3",
+                                "group": "briscoe",
+                                "user": "rachel.smith",
+                                "project_id": "DN23242",
+                                "barcode": "barcode03",
+                                "run_id": "fake_run_1",
+                                "id": "sample03"
+                            },
+                            {
+                                "sample_name": "my_sample_4",
+                                "group": "briscoe",
+                                "user": "rachel.smith",
+                                "project_id": "DN23242",
+                                "barcode": "barcode04",
+                                "run_id": "fake_run_1",
+                                "id": "sample04"
+                            },
+                            {
+                                "sample_name": "my_sample_5",
+                                "group": "briscoe",
+                                "user": "sam.smith",
+                                "project_id": "DN23243",
+                                "barcode": "barcode05",
+                                "run_id": "fake_run_1",
+                                "id": "sample05"
+                            },
+                            {
+                                "sample_name": "my_sample_6",
+                                "group": "briscoe",
+                                "user": "sam.smith",
+                                "project_id": "DN23243",
+                                "barcode": "barcode06",
+                                "run_id": "fake_run_1",
+                                "id": "sample06"
+                            },
+                            {
+                                "sample_name": "my_sample_7",
+                                "group": "briscoe",
+                                "user": "sam.smith",
+                                "project_id": "DN23243",
+                                "barcode": "barcode07",
+                                "run_id": "fake_run_1",
+                                "id": "fakesample07"
+                            }
+                        ],
+                        [
+                            "sample01.fastq.gz:md5,a6f60d91a0e6cdac1f3bcd79415a2d6d",
+                            "sample02.fastq.gz:md5,db3213cc6685a4379f00aad0718fc3e3",
+                            "sample03.fastq.gz:md5,8d6e8229a3bcbb1f9aa3bcf9821e653d",
+                            "sample04.fastq.gz:md5,c2fa3323177e508c7a0c37c7c3bcdae4",
+                            "sample05.fastq.gz:md5,b9ab5f9c808b970664e95833c12d2ffe",
+                            "sample06.fastq.gz:md5,7a0cad115c6acac739cb7d884e442824"
                         ]
                     ]
                 ],
@@ -50,23 +174,85 @@
             "nf-test": "0.9.0",
             "nextflow": "24.04.4"
         },
-        "timestamp": "2024-09-05T14:31:10.999587"
+        "timestamp": "2024-09-09T15:42:39.329431"
     },
     "bam": {
         "content": [
             {
                 "0": [
                     [
-                        {
-                            "id": "test"
-                        },
                         [
-                            "barcode01.bam:md5,d0b28dace9bdc1ae921b0e0d092239d1",
-                            "barcode02.bam:md5,8a9bd32509eab5c3989624d2109feae5",
-                            "barcode03.bam:md5,5289f36ec2fa8bda382b47031ee77db8",
-                            "barcode04.bam:md5,eb9a89c095a9cae2808c1145337e88aa",
-                            "barcode05.bam:md5,7dfa0c31f8a7c648fbcb371c5afa9541",
-                            "barcode06.bam:md5,03b2229ab201fa51f3ee8f3c6990e9e8"
+                            {
+                                "sample_name": "my_sample_1",
+                                "group": "briscoe",
+                                "user": "john.smith",
+                                "project_id": "DN23241",
+                                "barcode": "barcode01",
+                                "run_id": "fake_run_1",
+                                "id": "sample01"
+                            },
+                            {
+                                "sample_name": "my_sample_2",
+                                "group": "briscoe",
+                                "user": "john.smith",
+                                "project_id": "DN23241",
+                                "barcode": "barcode02",
+                                "run_id": "fake_run_1",
+                                "id": "sample02"
+                            },
+                            {
+                                "sample_name": "my_sample_3",
+                                "group": "briscoe",
+                                "user": "rachel.smith",
+                                "project_id": "DN23242",
+                                "barcode": "barcode03",
+                                "run_id": "fake_run_1",
+                                "id": "sample03"
+                            },
+                            {
+                                "sample_name": "my_sample_4",
+                                "group": "briscoe",
+                                "user": "rachel.smith",
+                                "project_id": "DN23242",
+                                "barcode": "barcode04",
+                                "run_id": "fake_run_1",
+                                "id": "sample04"
+                            },
+                            {
+                                "sample_name": "my_sample_5",
+                                "group": "briscoe",
+                                "user": "sam.smith",
+                                "project_id": "DN23243",
+                                "barcode": "barcode05",
+                                "run_id": "fake_run_1",
+                                "id": "sample05"
+                            },
+                            {
+                                "sample_name": "my_sample_6",
+                                "group": "briscoe",
+                                "user": "sam.smith",
+                                "project_id": "DN23243",
+                                "barcode": "barcode06",
+                                "run_id": "fake_run_1",
+                                "id": "sample06"
+                            },
+                            {
+                                "sample_name": "my_sample_7",
+                                "group": "briscoe",
+                                "user": "sam.smith",
+                                "project_id": "DN23243",
+                                "barcode": "barcode07",
+                                "run_id": "fake_run_1",
+                                "id": "fakesample07"
+                            }
+                        ],
+                        [
+                            "sample01.bam:md5,d0b28dace9bdc1ae921b0e0d092239d1",
+                            "sample02.bam:md5,8a9bd32509eab5c3989624d2109feae5",
+                            "sample03.bam:md5,5289f36ec2fa8bda382b47031ee77db8",
+                            "sample04.bam:md5,eb9a89c095a9cae2808c1145337e88aa",
+                            "sample05.bam:md5,7dfa0c31f8a7c648fbcb371c5afa9541",
+                            "sample06.bam:md5,03b2229ab201fa51f3ee8f3c6990e9e8"
                         ]
                     ]
                 ],
@@ -78,16 +264,78 @@
                 ],
                 "bam": [
                     [
-                        {
-                            "id": "test"
-                        },
                         [
-                            "barcode01.bam:md5,d0b28dace9bdc1ae921b0e0d092239d1",
-                            "barcode02.bam:md5,8a9bd32509eab5c3989624d2109feae5",
-                            "barcode03.bam:md5,5289f36ec2fa8bda382b47031ee77db8",
-                            "barcode04.bam:md5,eb9a89c095a9cae2808c1145337e88aa",
-                            "barcode05.bam:md5,7dfa0c31f8a7c648fbcb371c5afa9541",
-                            "barcode06.bam:md5,03b2229ab201fa51f3ee8f3c6990e9e8"
+                            {
+                                "sample_name": "my_sample_1",
+                                "group": "briscoe",
+                                "user": "john.smith",
+                                "project_id": "DN23241",
+                                "barcode": "barcode01",
+                                "run_id": "fake_run_1",
+                                "id": "sample01"
+                            },
+                            {
+                                "sample_name": "my_sample_2",
+                                "group": "briscoe",
+                                "user": "john.smith",
+                                "project_id": "DN23241",
+                                "barcode": "barcode02",
+                                "run_id": "fake_run_1",
+                                "id": "sample02"
+                            },
+                            {
+                                "sample_name": "my_sample_3",
+                                "group": "briscoe",
+                                "user": "rachel.smith",
+                                "project_id": "DN23242",
+                                "barcode": "barcode03",
+                                "run_id": "fake_run_1",
+                                "id": "sample03"
+                            },
+                            {
+                                "sample_name": "my_sample_4",
+                                "group": "briscoe",
+                                "user": "rachel.smith",
+                                "project_id": "DN23242",
+                                "barcode": "barcode04",
+                                "run_id": "fake_run_1",
+                                "id": "sample04"
+                            },
+                            {
+                                "sample_name": "my_sample_5",
+                                "group": "briscoe",
+                                "user": "sam.smith",
+                                "project_id": "DN23243",
+                                "barcode": "barcode05",
+                                "run_id": "fake_run_1",
+                                "id": "sample05"
+                            },
+                            {
+                                "sample_name": "my_sample_6",
+                                "group": "briscoe",
+                                "user": "sam.smith",
+                                "project_id": "DN23243",
+                                "barcode": "barcode06",
+                                "run_id": "fake_run_1",
+                                "id": "sample06"
+                            },
+                            {
+                                "sample_name": "my_sample_7",
+                                "group": "briscoe",
+                                "user": "sam.smith",
+                                "project_id": "DN23243",
+                                "barcode": "barcode07",
+                                "run_id": "fake_run_1",
+                                "id": "fakesample07"
+                            }
+                        ],
+                        [
+                            "sample01.bam:md5,d0b28dace9bdc1ae921b0e0d092239d1",
+                            "sample02.bam:md5,8a9bd32509eab5c3989624d2109feae5",
+                            "sample03.bam:md5,5289f36ec2fa8bda382b47031ee77db8",
+                            "sample04.bam:md5,eb9a89c095a9cae2808c1145337e88aa",
+                            "sample05.bam:md5,7dfa0c31f8a7c648fbcb371c5afa9541",
+                            "sample06.bam:md5,03b2229ab201fa51f3ee8f3c6990e9e8"
                         ]
                     ]
                 ],
@@ -103,6 +351,6 @@
             "nf-test": "0.9.0",
             "nextflow": "24.04.4"
         },
-        "timestamp": "2024-09-05T14:31:13.587299"
+        "timestamp": "2024-09-09T15:42:42.267415"
     }
 }
