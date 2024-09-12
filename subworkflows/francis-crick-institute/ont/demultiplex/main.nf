@@ -96,7 +96,9 @@ workflow ONT_DEMULTIPLEX {
     // Try to resolve bc_kit
     if(val_run_dir != null && val_bc_kit == null) {
         bc_kit = find_bc_kit(val_run_dir, valid_bc_kits)
-        if(bc_kit) { log.warn("Barcode Kit found from summary file: ${bc_kit}") }
+        if(bc_kit) { 
+            log.info("Barcode Kit found from summary file: ${bc_kit}")
+        }
     }
 
     //
@@ -225,6 +227,27 @@ workflow ONT_DEMULTIPLEX {
         .map { [it.id, it] }
         .join( ch_demux_bam.map{it[1]}.flatten().map{ [ it.simpleName, it ] } )
         .map { [ it[1], it[2] ] }
+
+    //
+    // CHANNEL: Check for no matches
+    //
+    meta_list = ch_sample_meta.toSortedList()
+    if(val_emit_bam) {
+        ch_demux_bam_meta.count().map{
+            if(it == 0) {
+                log.error(meta_list.toString())
+                exit 1, "Sample output channel empty"
+            }
+        }
+    }
+    else {
+        ch_demux_fastq_meta.count().map{
+            if(it == 0) {
+                log.error(meta_list.toString())
+                exit 1, "Sample output channel empty"
+            }
+        }
+    }
 
     emit:
     pod5        = ch_pod5_files       // channel: [ path(pod5) ]
