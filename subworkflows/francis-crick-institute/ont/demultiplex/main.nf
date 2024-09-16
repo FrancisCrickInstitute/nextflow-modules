@@ -2,6 +2,7 @@
 Subworkflow for basecalling and demultiplexing nanopore data
 */
 
+include { SAMPLESHEET_CHECK                   } from '../../../../modules/francis-crick-institute/samplesheet/check/main'
 include { DORADO_BASECALLER                   } from '../../../../modules/francis-crick-institute/dorado/basecaller/main'
 include { DORADO_DEMUX                        } from '../../../../modules/francis-crick-institute/dorado/demux/main'
 include { SAMTOOLS_MERGE as MERGE_BASECALLING } from '../../../../modules/nf-core/samtools/merge/main'
@@ -102,9 +103,16 @@ workflow ONT_DEMULTIPLEX {
     }
 
     //
+    // MODULE: Check samplesheet
+    //
+    SAMPLESHEET_CHECK (
+        val_samplesheet
+    )
+
+    //
     // CHANNEL: Parse samplesheet into metadata
     //
-    ch_sample_meta = Channel.from(file(val_samplesheet, checkIfExists: true))
+    ch_sample_meta = SAMPLESHEET_CHECK.out.csv
         .splitCsv (header:true, sep:",")
         .map {
             it.group = it.group.replaceAll(" ", "_").toLowerCase()
