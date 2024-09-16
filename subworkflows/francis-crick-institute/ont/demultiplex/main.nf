@@ -105,8 +105,9 @@ workflow ONT_DEMULTIPLEX {
     //
     // MODULE: Check samplesheet
     //
+    ch_samplesheet = Channel.from(file(val_samplesheet, checkIfExists: true))
     SAMPLESHEET_CHECK (
-        val_samplesheet
+        ch_samplesheet
     )
 
     //
