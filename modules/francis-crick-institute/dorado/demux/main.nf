@@ -1,7 +1,7 @@
 process DORADO_DEMUX {
     label 'process_high'
 
-    container 'docker.io/thecrick/pipetech_dorado:0.8.0-linux-x64'
+    container 'docker.io/thecrick/pipetech_dorado:0.8.1-linux-x64'
 
     input:
     tuple val(meta), path(bam)
@@ -47,7 +47,7 @@ process DORADO_DEMUX {
                     ext="bam"
                 fi
 
-                if [ "\$base_name" == "\$barcode" ]; then
+                if [[ "\$base_name" == *"\$barcode"* ]]; then
                     mv "\$f" "\$sample_id.\$ext"
                     break
                 fi
