@@ -1,0 +1,34 @@
+name: "dorado/demux"
+description: "Module for demultiplexing reads using Dorado"
+keywords:
+  - "Nextflow"
+  - "Dorado"
+  - "Demultiplexing"
+authors:
+  - "Author Name <chris.cheshire@crick.ac.uk>"
+maintainers:
+  - "Maintainer Name <chris.cheshire@crick.ac.uk>"
+input:
+  - bam:
+    - type: "tuple"
+      description: "Tuple containing metadata and BAM file"
+  - emit_bam:
+    - type: "boolean"
+      description: "Flag to emit BAM files"
+output:
+  - bam:
+    - type: "tuple"
+      description: "Tuple containing metadata and BAM files"
+  - fastq:
+    - type: "tuple"
+      description: "Tuple containing metadata and FASTQ files"
+  - yaml:
+    - type: "file"
+      description: "YAML file with version information"
+tools:
+  - dorado:
+    name: "Dorado"
+    description: "Dorado"
+    homepage: "https://github.com/nanoporetech/dorado"
+    licence:
+      - "MIT"

@@ -1,0 +1,10 @@
+name: "util/logging"
+description: "Utility module for logging operations in Nextflow"
+keywords:
+  - "Nextflow"
+  - "Logging"
+  - "Utility"
+authors:
+  - "Author Name <chris.cheshire@crick.ac.uk>"
+maintainers:
+  - "Maintainer Name <chris.cheshire@crick.ac.uk>"

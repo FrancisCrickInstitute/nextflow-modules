@@ -1,0 +1,28 @@
+name: "dorado/summary"
+description: "Module for generating summary statistics using Dorado"
+keywords:
+  - "Nextflow"
+  - "Dorado"
+  - "Summary"
+authors:
+  - "Author Name <chris.cheshire@crick.ac.uk>"
+maintainers:
+  - "Maintainer Name <chris.cheshire@crick.ac.uk>"
+input:
+  - bam:
+    - type: "tuple"
+      description: "Tuple containing metadata and BAM file"
+output:
+  - tsv:
+    - type: "tuple"
+      description: "Tuple containing metadata and TSV file"
+  - yaml:
+    - type: "file"
+      description: "YAML file with version information"
+tools:
+  - dorado:
+    name: "Dorado"
+    description: "Dorado"
+    homepage: "https://github.com/nanoporetech/dorado"
+    licence:
+      - "MIT"
