@@ -1,0 +1,24 @@
+name: "util/io"
+description: "Utility module for IO operations in Nextflow"
+keywords:
+  - "Nextflow"
+  - "IO"
+  - "Utility"
+authors:
+  - "Author Name <chris.cheshire@crick.ac.uk>"
+maintainers:
+  - "Maintainer Name <chris.cheshire@crick.ac.uk>"
+input:
+  - map:
+    - type: "map"
+      description: "Input parameters map"
+output:
+  - dump_params:
+    - type: "file"
+      description: "JSON file with dumped parameters"
+  - dump_csv:
+    - type: "file"
+      description: "CSV file with dumped meta"
+  - summary_txt:
+    - type: "file"
+      description: "Workflow complete summary file"

@@ -1,0 +1,18 @@
+name: "util/io"
+description: "Utility module for IO operations in Nextflow"
+keywords:
+  - "Nextflow"
+  - "IO"
+  - "Utility"
+authors:
+  - "Author Name <chris.cheshire@crick.ac.uk>"
+maintainers:
+  - "Maintainer Name <chris.cheshire@crick.ac.uk>"
+input:
+  - samplesheet:
+    - type: "file"
+      description: "Input samplesheet"
+output:
+  - csv:
+    - type: "file"
+      description: "Confirmed samplesheet"

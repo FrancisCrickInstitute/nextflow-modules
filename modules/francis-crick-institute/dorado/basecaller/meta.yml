@@ -1,0 +1,37 @@
+name: "dorado/basecaller"
+description: "Module for basecalling reads using Dorado"
+keywords:
+  - "Nextflow"
+  - "Dorado"
+  - "Basecalling"
+authors:
+  - "Author Name <chris.cheshire@crick.ac.uk>"
+maintainers:
+  - "Maintainer Name <chris.cheshire@crick.ac.uk>"
+input:
+  - pod5s:
+    - type: "tuple"
+      description: "Tuple containing metadata and POD5 files"
+  - bam:
+    - type: "file"
+      description: "BAM file for resuming basecalling"
+  - model:
+    - type: "string"
+      description: "Model for basecalling"
+  - bc_kit:
+    - type: "string"
+      description: "Barcode kit name"
+output:
+  - bam:
+    - type: "tuple"
+      description: "Tuple containing metadata and BAM file"
+  - yaml:
+    - type: "file"
+      description: "YAML file with version information"
+tools:
+  - dorado:
+    name: "Dorado"
+    description: "Dorado"
+    homepage: "https://github.com/nanoporetech/dorado"
+    licence:
+      - "MIT"
