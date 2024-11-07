@@ -1,16 +1,8 @@
-import org.yaml.snakeyaml.Yaml
-import groovy.json.JsonOutput
-import nextflow.extension.FilesEx
-import java.nio.file.Path
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.security.SecureRandom
-
 //
 // ANSII Colours used for terminal logging
 //
 def log_colours(monochrome_logs) {
-    Map colorcodes = [:]
+    def colorcodes = [:]
 
     // Reset / Meta
     colorcodes['reset']      = monochrome_logs ? '' : "\033[0m"
@@ -84,12 +76,12 @@ def log_colours(monochrome_logs) {
 }
 
 def dashed_line(monochrome_logs) {
-    Map colors = log_colours(monochrome_logs)
+    def colors = log_colours(monochrome_logs)
     return "-${colors.dim}-----------------------------------------------------------------------------------------------${colors.reset}-"
 }
 
 def crick_logo(monochrome_logs) {
-    Map colors = log_colours(monochrome_logs)
+    def colors = log_colours(monochrome_logs)
 
     String.format(
         """\n
@@ -166,7 +158,7 @@ def crick_logo(monochrome_logs) {
 //
 def params_summary_map(workflow, params, debug) {
     // Get major nextflow workflow parameters
-    def Map workflow_summary = [:]
+    def workflow_summary = [:]
     if (workflow.revision) {
         workflow_summary['revision'] = workflow.revision
     }
@@ -185,7 +177,7 @@ def params_summary_map(workflow, params, debug) {
     workflow_summary['configFiles']  = workflow.configFiles.join(', ')
 
     // Get boilerplate parameters that should be present in every pipeline
-    def Map params_summary = [:]
+    def params_summary = [:]
     def boilerpate_params = new LinkedHashMap()
     boilerpate_params.put("outdir", params.outdir)
     boilerpate_params.put("tracedir", params.tracedir)
@@ -199,7 +191,7 @@ def params_summary_map(workflow, params, debug) {
     def other_params = new LinkedHashMap()
     def default_ignore = ['debug', 'ignore_params', 'outdir', 'tracedir', 'publish_dir_mode', 'max_memory', 'max_cpus', 'max_time', 'test_data', 'goodwright_test_data']
     def params_ignore = params.ignore_params.split(',')
-    Set params_key_set = params.keySet()
+    def params_key_set = params.keySet()
 
     params_key_set.each {
         if(!debug && !params_ignore.contains(it) && !default_ignore.contains(it)) {
@@ -218,13 +210,11 @@ def params_summary_map(workflow, params, debug) {
 // Get maximum number of characters across all parameter names
 //
 def params_maxchars(params_map) {
-    Integer max_chars = 0
-    for (group in params_map.keySet()) {
-        def group_params = params_map.get(group)  // This gets the parameters of that particular group
-        for (param in group_params.keySet()) {
-            if (param.size() > max_chars) {
-                max_chars = param.size()
-            }
+    def max_chars = 0
+    params_map.keySet().each { group ->
+        def group_params = params_map.get(group)
+        group_params.keySet().each { param ->
+            max_chars = Math.max(max_chars, param.size())
         }
     }
     return max_chars
@@ -234,20 +224,22 @@ def params_maxchars(params_map) {
 // Beautify parameters for summary and return as string
 //
 def params_summary_log(workflow, params, monochrome_logs, debug) {
-    Map colors = log_colours(monochrome_logs)
-    String output  = ''
+    def colors = log_colours(monochrome_logs)
+    def output = ''
     def params_map = params_summary_map(workflow, params, debug)
-    def max_chars  = params_maxchars(params_map)
-    for (group in params_map.keySet()) {
-        def group_params = params_map.get(group)  // This gets the parameters of that particular group
+    def max_chars = params_maxchars(params_map)
+
+    params_map.keySet().each { group ->
+        def group_params = params_map.get(group)  // Get parameters of the current group
         if (group_params) {
             output += colors.bold + group + colors.reset + '\n'
-            for (param in group_params.keySet()) {
-                output += "  " + colors.blue + param.padRight(max_chars) + ": " + colors.green +  group_params.get(param) + colors.reset + '\n'
+            group_params.keySet().each { param ->
+                output += "  " + colors.blue + param.padRight(max_chars) + ": " + colors.green + group_params.get(param) + colors.reset + '\n'
             }
             output += '\n'
         }
     }
+
     output += dashed_line(params.monochrome_logs)
     return output
 }
@@ -267,20 +259,21 @@ def summary_log(workflow, params, debug, monochrome_logs) {
 //
 def multiqc_summary(workflow, params) {
     def summary = params_summary_map(workflow, params, false)
-    String summary_section = ''
-    for (group in summary.keySet()) {
-        def group_params = summary.get(group)  // This gets the parameters of that particular group
+    def summary_section = ''
+    
+    summary.keySet().each { group ->
+        def group_params = summary.get(group)  // Get parameters of the current group
         if (group_params) {
             summary_section += "    <p style=\"font-size:110%\"><b>$group</b></p>\n"
             summary_section += "    <dl class=\"dl-horizontal\">\n"
-            for (param in group_params.keySet()) {
-                summary_section += "        <dt>$param</dt><dd><samp>${group_params.get(param) ?: '<span style=\"color:#999999;\">N/A</a>'}</samp></dd>\n"
+            group_params.keySet().each { param ->
+                summary_section += "        <dt>$param</dt><dd><samp>${group_params.get(param) ?: '<span style=\"color:#999999;\">N/A</span>'}</samp></dd>\n"
             }
             summary_section += "    </dl>\n"
         }
     }
 
-    String yaml_file_text  = "id: '${workflow.manifest.name.replace('/','-')}-summary'\n"
+    def yaml_file_text  = "id: '${workflow.manifest.name.replace('/','-')}-summary'\n"
     yaml_file_text        += "description: ' - this information is collected when the pipeline is started.'\n"
     yaml_file_text        += "section_name: '${workflow.manifest.name} Workflow Summary'\n"
     yaml_file_text        += "section_href: 'https://github.com/${workflow.manifest.name}'\n"
@@ -290,11 +283,12 @@ def multiqc_summary(workflow, params) {
     return yaml_file_text
 }
 
+
 //
 // Generate version string
 //
-def String version(workflow) {
-    String version_string = ""
+def version(workflow) {
+    def version_string = ""
 
     if (workflow.manifest.version) {
         def prefix_v = workflow.manifest.version[0] != 'v' ? 'v' : ''
@@ -320,7 +314,7 @@ def im_notification(workflow, params, projectDir, runid, summary_params, log) {
 
     // Flatten the summary into one keyvalue list
     def summary = [:]
-    for (group in summary_params.keySet()) {
+    summary_params.keySet().each { group ->
         summary << summary_params[group]
     }
 
@@ -353,12 +347,12 @@ def im_notification(workflow, params, projectDir, runid, summary_params, log) {
     def formatted_summary = summary.collect { k, v ->
         k == 'hook_url' ? "_${k}_: (_hidden_)" :
         (v instanceof Path || (v instanceof String && v.contains('/'))) ? "_${k}_: `${v}`" :
-        v instanceof LocalDateTime ? "_${k}_: ${v.format(DateTimeFormatter.ofLocalizedDateTime(DateTimeFormatter.MEDIUM))}" :
+        v instanceof java.time.LocalDateTime ? "_${k}_: ${v.format(java.time.format.DateTimeFormatter.ofLocalizedDateTime(java.time.format.DateTimeFormatter.MEDIUM))}" :
         "_${k}_: ${v}"
     }.join(',\n')
 
     // Santitise error message
-    error_message = 'None'
+    def error_message = 'None'
     if(workflow.errorReport) {
         error_message = workflow.errorMessage.replaceAll(/"/, '\\"')       // Escape double quotes
                                             //  .replaceAll(/'/, "\\'")       // Escape single quotes
@@ -390,8 +384,8 @@ def im_notification(workflow, params, projectDir, runid, summary_params, log) {
 
     // Debug, export the json message to file
     def temp_pf    = new File(workflow.launchDir.toString(), ".slack.json")
-    temp_pf.text   = JsonOutput.prettyPrint(json_message)
-    FilesEx.copyTo(temp_pf.toPath(), "${params.outdir}/slack_message.json")
+    temp_pf.text   = groovy.json.JsonOutput.prettyPrint(json_message)
+    nextflow.extension.FilesEx.copyTo(temp_pf.toPath(), "${params.outdir}/slack_message.json")
     temp_pf.delete()
 
     // POST

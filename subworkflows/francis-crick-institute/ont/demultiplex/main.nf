@@ -7,47 +7,6 @@ include { DORADO_BASECALLER                   } from '../../../../modules/franci
 include { DORADO_DEMUX                        } from '../../../../modules/francis-crick-institute/dorado/demux/main'
 include { SAMTOOLS_MERGE as MERGE_BASECALLING } from '../../../../modules/nf-core/samtools/merge/main'
 
-// Valid BC Kits
-def valid_bc_kits = [
-    "EXP-NBD103",
-    "EXP-NBD104",
-    "EXP-NBD114",
-    "EXP-NBD196",
-    "EXP-PBC001",
-    "EXP-PBC096",
-    "SQK-16S024",
-    "SQK-16S114-24",
-    "SQK-LWB001",
-    "SQK-MLK111-96-XL",
-    "SQK-MLK114-96-XL",
-    "SQK-NBD111-24",
-    "SQK-NBD111-96",
-    "SQK-NBD114-24",
-    "SQK-NBD114-96",
-    "SQK-PBK004",
-    "SQK-PCB109",
-    "SQK-PCB110",
-    "SQK-PCB111-24",
-    "SQK-PCB114-24",
-    "SQK-RAB201",
-    "SQK-RAB204",
-    "SQK-RBK001",
-    "SQK-RBK004",
-    "SQK-RBK110-96",
-    "SQK-RBK111-24",
-    "SQK-RBK111-96",
-    "SQK-RBK114-24",
-    "SQK-RBK114-96",
-    "SQK-RLB001",
-    "SQK-RPB004",
-    "SQK-RPB114-24",
-    "TWIST-ALL",
-    "VSK-PTC001",
-    "VSK-VMK001",
-    "VSK-VMK004",
-    "VSK-VPS001"
-]
-
 def find_bc_kit(run_dir, valid_bc_kits) {
     // Find the summary file if it exists
     def run_dir_path = new File(run_dir)
@@ -70,7 +29,6 @@ workflow ONT_DEMULTIPLEX {
     take:
     val_model         // Specify a short code like HAC or SUP
     val_bc_kit        // The barcode kit to demultiplex against
-    val_check_barcode // Specifies if the run directory should be searched for a valid barcode kit
     val_bc_parse_pos  // The parse position to substring the barcode from in the meta data
     val_append_bc     // Appends bc-kit to sample matching
     val_batch_num     // Number of files in a dorado batch
@@ -81,6 +39,47 @@ workflow ONT_DEMULTIPLEX {
     val_samplesheet   // The string path of the samplesheet to parse for metadata
 
     main:
+
+    // Valid BC Kits
+    def valid_bc_kits = [
+        "EXP-NBD103",
+        "EXP-NBD104",
+        "EXP-NBD114",
+        "EXP-NBD196",
+        "EXP-PBC001",
+        "EXP-PBC096",
+        "SQK-16S024",
+        "SQK-16S114-24",
+        "SQK-LWB001",
+        "SQK-MLK111-96-XL",
+        "SQK-MLK114-96-XL",
+        "SQK-NBD111-24",
+        "SQK-NBD111-96",
+        "SQK-NBD114-24",
+        "SQK-NBD114-96",
+        "SQK-PBK004",
+        "SQK-PCB109",
+        "SQK-PCB110",
+        "SQK-PCB111-24",
+        "SQK-PCB114-24",
+        "SQK-RAB201",
+        "SQK-RAB204",
+        "SQK-RBK001",
+        "SQK-RBK004",
+        "SQK-RBK110-96",
+        "SQK-RBK111-24",
+        "SQK-RBK111-96",
+        "SQK-RBK114-24",
+        "SQK-RBK114-96",
+        "SQK-RLB001",
+        "SQK-RPB004",
+        "SQK-RPB114-24",
+        "TWIST-ALL",
+        "VSK-PTC001",
+        "VSK-VMK001",
+        "VSK-VMK004",
+        "VSK-VPS001"
+    ]
 
     // Init
     ch_versions = Channel.empty()

@@ -1,12 +1,3 @@
-import org.yaml.snakeyaml.Yaml
-import groovy.json.JsonOutput
-import nextflow.extension.FilesEx
-import java.nio.file.Path
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.security.SecureRandom
-
-
 //
 // Dump pipeline parameters in a json file
 //
@@ -14,10 +5,10 @@ def dump_parameters(workflow, params) {
     def timestamp = new java.util.Date().format( 'yyyy-MM-dd_HH-mm-ss')
     def filename = "params_${timestamp}.json"
     def temp_pf = new File(workflow.launchDir.toString(), ".${filename}")
-    def jsonStr = JsonOutput.toJson(params)
-    temp_pf.text = JsonOutput.prettyPrint(jsonStr)
+    def jsonStr =  groovy.json.JsonOutput.toJson(params)
+    temp_pf.text =  groovy.json.JsonOutput.prettyPrint(jsonStr)
 
-    FilesEx.copyTo(temp_pf.toPath(), "${params.outdir}/pipeline_info/params_${timestamp}.json")
+    nextflow.extension.FilesEx.copyTo(temp_pf.toPath(), "${params.outdir}/pipeline_info/params_${timestamp}.json")
     temp_pf.delete()
 }
 
@@ -36,10 +27,6 @@ def dump_meta(meta, path) {
             writer.writeLine(row.join(','))
         }
     }
-
-    // def temp_pf = new File(workflow.launchDir.toString(), ".${filename}")
-    // FilesEx.copyTo(temp_pf.toPath(), "${params.outdir}/pipeline_info/params_${timestamp}.json")
-    // temp_pf.delete()
 }
 
 //
@@ -59,7 +46,7 @@ def workflow_complete_summary(workflow, path) {
 //
 def gen_id(length) {
     def chars = (('A'..'Z') + ('a'..'z') + ('0'..'9')).join()
-    def random = new SecureRandom()
+    def random = new java.security.SecureRandom()
     def sb = new StringBuilder(length)
     (1..length).each {
         sb.append(chars[random.nextInt(chars.length())])
