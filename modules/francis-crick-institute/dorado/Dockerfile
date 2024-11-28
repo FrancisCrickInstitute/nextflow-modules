@@ -15,7 +15,7 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /home
 
-ARG DORADO_VERSION=0.8.1
+ARG DORADO_VERSION=0.8.3
 RUN curl -O https://cdn.oxfordnanoportal.com/software/analysis/dorado-${DORADO_VERSION}-linux-x64.tar.gz
 RUN tar -xzvf dorado-${DORADO_VERSION}-linux-x64.tar.gz
 

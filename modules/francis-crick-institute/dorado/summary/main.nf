@@ -2,7 +2,7 @@ process DORADO_SUMMARY {
     tag "$meta.id"
     label 'process_medium'
 
-    container 'docker.io/thecrick/pipetech_dorado:0.8.1-linux-x64'
+    container 'docker.io/thecrick/pipetech_dorado:0.8.3-linux-x64'
 
     input:
     tuple val(meta), path(bam)
